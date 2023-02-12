@@ -1,0 +1,67 @@
+const Card = require('../models/Movie');
+const { CREATED_CODE } = require('../utils/statusError');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
+
+const createCard = async (req, res, next) => {
+  try {
+    const {
+      country, director, duration, year, description, image, trailerLink, thumbnail, nameRU, nameEN,
+    } = req.body;
+    const card = await Card.create({
+      country,
+      director,
+      duration,
+      year,
+      description,
+      image,
+      trailerLink,
+      thumbnail,
+      owner: req.user._id,
+      nameRU,
+      nameEN,
+    });
+    return res.status(CREATED_CODE).send(card);
+  } catch (err) {
+    console.log(err);
+    if (err.name === 'ValidationError') {
+      return next(new BadRequestError('Переданы некорректные данные'));
+    }
+    return next(err);
+  }
+};
+const deleteCard = async (req, res, next) => {
+  try {
+    const card = await Card.findById(req.params.id);
+    if (card) {
+      if (card.owner.toString() === req.user._id) {
+        const deletedcard = await Card.findByIdAndDelete(req.params.id);
+        if (deletedcard) {
+          return res.send(deletedcard);
+        }
+      }
+      return next(new ForbiddenError('Нет прав на удаление'));
+    }
+    return next(new NotFoundError('Карточка не найдена'));
+  } catch (err) {
+    if (err.name === 'CastError') {
+      return next(new BadRequestError('Переданы некорректные данные'));
+    }
+    return next(err);
+  }
+};
+const getCards = async (req, res, next) => {
+  try {
+    const cards = await Card.find({ owner: req.user._id });
+    res.send(cards);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getCards,
+  createCard,
+  deleteCard,
+};
