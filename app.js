@@ -11,7 +11,6 @@ const auth = require('./middlewares/auth');
 const errorsHandler = require('./middlewares/errorsHandler');
 
 const { login, createUser, signout } = require('./controllers/users');
-const { URL_REGEXP } = require('./utils/statusError');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
@@ -28,24 +27,18 @@ app.use(cors(
   },
 ));
 
-app.use(express.json());
 app.use(cookieParser());
+app.use(requestLogger);
 
-app.post('/signup', celebrate({
+app.post('/signup', express.json(), celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi
-      .string()
-      .pattern(URL_REGEXP),
+    name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 }), createUser);
 
-app.use(requestLogger);
-
-app.post('/signin', celebrate({
+app.post('/signin', express.json(), celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),

@@ -49,17 +49,18 @@ const updateUser = async (req, res, next) => {
   try {
     const {
       name,
-      about,
+      email,
     } = req.body;
+    console.log(req.body);
     const user = await User.findByIdAndUpdate(req.user._id, {
       name,
-      about,
+      email,
     }, {
       new: true,
       runValidators: true,
     });
     if (user) {
-      return res.send(user);
+      return res.send({ email: user.email, name: user.name });
     }
     return next(new NotFoundError('Пользователь не найден'));
   } catch (err) {
@@ -69,59 +70,13 @@ const updateUser = async (req, res, next) => {
     return next(err);
   }
 };
-const updateUserAvatar = async (req, res, next) => {
-  try {
-    const {
-      avatar,
-    } = req.body;
-    const user = await User.findByIdAndUpdate(req.user._id, {
-      avatar,
-    }, {
-      new: true,
-      runValidators: true,
-    });
-    if (user) {
-      return res.send(user);
-    }
-    return next(new NotFoundError('Пользователь не найден'));
-  } catch (err) {
-    if (err.name === 'ValidationError') {
-      return next(new BadRequestError('Переданы некорректные данные'));
-    }
-    return next(err);
-  }
-};
-const getUsers = async (req, res, next) => {
-  try {
-    const users = await User.find({});
-    res.send(users);
-  } catch (err) {
-    next(err);
-  }
-};
+
 const getUserInfo = async (req, res, next) => {
   try {
     const user = await User.findById(req.user._id);
-    res.send(user);
+    res.send({ email: user.email, name: user.name });
   } catch (err) {
     next(err);
-  }
-};
-const getUserById = async (req, res, next) => {
-  try {
-    const {
-      id,
-    } = req.params;
-    const user = await User.findById(id);
-    if (user) {
-      return res.send(user);
-    }
-    return next(new NotFoundError('Пользователь не найден'));
-  } catch (err) {
-    if (err.name === 'CastError') {
-      return next(new BadRequestError('Пользователь не найден'));
-    }
-    return next(err);
   }
 };
 
@@ -152,18 +107,15 @@ const login = async (req, res, next) => {
 
 const signout = (req, res, next) => {
   try {
-    res.clearCookie('jwt').send({ message: 'Выход' });
+    res.clearCookie('token').send({ message: 'Выход' });
   } catch (err) {
     next(err);
   }
 };
 
 module.exports = {
-  getUsers,
   getUserInfo,
-  getUserById,
   updateUser,
-  updateUserAvatar,
   createUser,
   signout,
   login,
