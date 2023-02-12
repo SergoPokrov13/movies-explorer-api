@@ -22,6 +22,12 @@ mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
   useUnifiedTopology: false,
 });
 
+app.use(cors(
+  {
+    origin: ['http://localhost:3000'],
+  },
+));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -47,12 +53,6 @@ app.post('/signin', celebrate({
 }), login);
 app.use(auth);
 app.get('/signout', signout);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 app.use(router);
 

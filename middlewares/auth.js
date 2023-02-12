@@ -4,8 +4,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
 function auth(req, res, next) {
-  const { authorization } = req.headers;
-  const token = authorization;
+  const { token } = req.cookies;
   let payload;
 
   try {
