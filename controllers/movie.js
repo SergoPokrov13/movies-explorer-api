@@ -4,10 +4,19 @@ const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
+const getCards = async (req, res, next) => {
+  try {
+    const cards = await Card.find({ owner: req.user._id });
+    res.send(cards);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const createCard = async (req, res, next) => {
   try {
     const {
-      country, director, duration, year, description, image, trailerLink, thumbnail, nameRU, nameEN,
+      country, director, duration, year, description, image, trailerLink, thumbnail, movieId, nameRU, nameEN,
     } = req.body;
     const card = await Card.create({
       country,
@@ -18,6 +27,7 @@ const createCard = async (req, res, next) => {
       image,
       trailerLink,
       thumbnail,
+      movieId,
       owner: req.user._id,
       nameRU,
       nameEN,
@@ -49,14 +59,6 @@ const deleteCard = async (req, res, next) => {
       return next(new BadRequestError('Переданы некорректные данные'));
     }
     return next(err);
-  }
-};
-const getCards = async (req, res, next) => {
-  try {
-    const cards = await Card.find({ owner: req.user._id });
-    res.send(cards);
-  } catch (err) {
-    next(err);
   }
 };
 
