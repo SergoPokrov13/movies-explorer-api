@@ -98,8 +98,8 @@ const login = async (req, res, next) => {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,
       someSite: true,
-    });
-    return res.send({ messge: 'Успешная авторизация' });
+    })
+      .send({ messge: 'Успешная авторизация' });
   } catch (err) {
     return next(err);
   }
