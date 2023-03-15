@@ -57,17 +57,17 @@ const movieSchema = mongoose.Schema({
   },
   nameRU: {
     type: String,
-    validate: {
-      validator: (v) => RU_REGEXP.test(v),
-      message: 'Только буквы кириллицы',
-    },
+    // validate: {
+    //   validator: (v) => RU_REGEXP.test(v),
+    //   message: 'Только буквы кириллицы',
+    // },
   },
   nameEN: {
     type: String,
-    validate: {
-      validator: (v) => EN_REGEXP.test(v),
-      message: 'Только латинские буквы',
-    },
+    // validate: {
+    //   validator: (v) => EN_REGEXP.test(v),
+    //   message: 'Только латинские буквы',
+    // },
   },
   createdAt: {
     type: Date,
