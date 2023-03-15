@@ -26,8 +26,8 @@ cardRoutes.post('/', express.json(), celebrate({
     trailerLink: Joi.string().required().pattern(URL_REGEXP),
     thumbnail: Joi.string().required().pattern(URL_REGEXP),
     movieId: Joi.number().integer().required(),
-    nameRU: Joi.string().pattern(RU_REGEXP),
-    nameEN: Joi.string().pattern(EN_REGEXP),
+    nameRU: Joi.string(),
+    nameEN: Joi.string(),
   }),
 }), createCard);
 cardRoutes.get('/', getCards);

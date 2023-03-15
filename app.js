@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(requestLogger);
 
-app.post('/signup', express.json(), celebrate({
+app.post('/api/signup', express.json(), celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().email(),
@@ -40,14 +40,14 @@ app.post('/signup', express.json(), celebrate({
   }),
 }), createUser);
 
-app.post('/signin', express.json(), celebrate({
+app.post('/api/signin', express.json(), celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
 }), login);
 app.use(auth);
-app.get('/signout', signout);
+app.get('/api/signout', signout);
 
 app.use(router);
 
