@@ -94,10 +94,10 @@ const login = async (req, res, next) => {
       { _id: user._id },
       NODE_ENV === 'production' ? JWT_SECRET : 'secret',
     );
-    res.cookie('token', token, {
+    return res.cookie('token', token, {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,
-      Secure: true,
+      someSite: true,
     });
     return res.send({ messge: 'Успешная авторизация' });
   } catch (err) {
