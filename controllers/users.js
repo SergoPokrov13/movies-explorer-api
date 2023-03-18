@@ -97,6 +97,7 @@ const login = async (req, res, next) => {
     return res.cookie('token', token, {
       maxAge: 3600000 * 24 * 7,
       httpOnly: true,
+      sameSite: 'None',
     })
       .send({ messge: 'Успешная авторизация' });
   } catch (err) {
