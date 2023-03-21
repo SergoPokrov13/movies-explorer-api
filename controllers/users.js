@@ -28,13 +28,20 @@ const createUser = async (req, res, next) => {
         password: passwordHash,
       },
     );
-    return res.status(CREATED_CODE).send({
+    const token = jwt.sign({
       _id: user._id,
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-      email: user.email,
-    });
+    }, NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_DEV);
+
+    return res.status(CREATED_CODE)
+      .cookie('jwt', token, {
+        maxAge: 3600000,
+        httpOnly: true,
+      })
+      .send({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      });
   } catch (err) {
     if (err.code === 11000) {
       return next(new ConflictError('Пользователь с таким email уже существует'));
