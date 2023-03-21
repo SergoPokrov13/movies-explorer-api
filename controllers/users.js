@@ -28,15 +28,15 @@ const createUser = async (req, res, next) => {
         password: passwordHash,
       },
     );
-    const token = jwt.sign({
-      _id: user._id,
-    }, NODE_ENV === 'production' ? JWT_SECRET : JWT_SECRET_DEV);
+    const token = jwt.sign(
+      { _id: user._id },
+      NODE_ENV === 'production' ? JWT_SECRET : 'secret',
+    );
 
-    return res.status(CREATED_CODE)
-      .cookie('jwt', token, {
-        maxAge: 3600000,
-        httpOnly: true,
-      })
+    return res.cookie('token', token, {
+      maxAge: 3600000 * 24 * 7,
+      httpOnly: true,
+    })
       .send({
         _id: user._id,
         name: user.name,
